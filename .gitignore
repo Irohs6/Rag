@@ -218,3 +218,20 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# RAG corpus, evaluation data, generated assets and local reference
+/data/raw/*
+!/data/raw/.gitkeep
+/data/processed/*
+!/data/processed/.gitkeep
+/data/datasets/UnansweredQuestions/*
+!/data/datasets/UnansweredQuestions/.gitkeep
+/data/datasets/AnsweredQuestions/*
+!/data/datasets/AnsweredQuestions/.gitkeep
+/data/output/search_results/*
+!/data/output/search_results/.gitkeep
+/data/output/search_results_and_answer/*
+!/data/output/search_results_and_answer/.gitkeep
+/models/
+*.safetensors
+/docs/subject.pdf
