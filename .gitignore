@@ -235,3 +235,6 @@ __marimo__/
 /models/
 *.safetensors
 /docs/subject.pdf
+/moulinette
+/moulinette-ubuntu
+/moulinette-fedora

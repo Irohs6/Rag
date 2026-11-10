@@ -12,7 +12,7 @@ This starter contains the project structure, MIT license, and a roadmap based on
 
 ## Instructions
 
-Development targets Python 3.10+ and uv. Place the supplied corpus in `data/raw/` and the supplied question datasets in `data/datasets/`. These attachments have not been provided yet.
+Development targets Python 3.10+ and uv. Place the supplied corpus in `data/raw/` and the supplied question datasets in `data/datasets/`. See [resource placement](docs/RESOURCES.md) for the expected local paths. The corpus and datasets are intentionally excluded from Git.
 
 The following interface must be implemented before these commands can run:
 
@@ -26,7 +26,7 @@ uv run python -m src answer_dataset --student_search_results_path data/output/se
 uv run python -m src evaluate --student_search_results_path data/output/search_results/UnansweredQuestions/dataset_docs_public.json --dataset_path data/datasets/AnsweredQuestions/dataset_docs_public.json
 ```
 
-Dependency metadata, the uv lockfile, and the required Makefile will be added during implementation. See [the roadmap](docs/ROADMAP.md).
+Dependency metadata, the uv lockfile, and the required Makefile will be added during implementation. See [the roadmap](docs/ROADMAP.md) and the assignment in [English](docs/subject_en.md) or [French](docs/subject_fr.md).
 
 ## System architecture
 
@@ -60,7 +60,7 @@ Implementation has not started. Upcoming work includes preserving character span
 
 ## Resources
 
-The project requirements were read from the supplied subject, version 2.0. The local reference copy is `docs/subject.pdf` (ignored by Git). Technical references will be added with the implementation.
+The project requirements were read from the supplied subject, version 2.0. Markdown adaptations are available in [English](docs/subject_en.md) and [French](docs/subject_fr.md). An optional local reference copy is `docs/subject.pdf` (ignored by Git). Technical references will be added with the implementation.
 
 AI assistance was used to read the subject and initialize the repository, directory structure, and planning documentation. No RAG implementation or performance results were generated in this setup step.
 
