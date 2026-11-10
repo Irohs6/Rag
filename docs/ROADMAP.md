@@ -1,52 +1,46 @@
-# Implementation roadmap
+# Feuille de route — RAG against the machine (v2.0)
 
-Planning checklist based on subject version 2.0; this is not a completion report.
+## 1. Suivre une vraie question dans le corpus
 
-## 1. Development setup
+- [x] Placer vLLM dans `data/raw/vllm-0.10.1/`, ranger les quatre datasets dans `data/datasets/` et lancer l'aide de la moulinette sur le poste.
+- [ ] Prendre une question dans `UnansweredQuestions/dataset_docs_public.json`. Retrouver son `question_id` dans le fichier du même nom sous `AnsweredQuestions/`.
+- [ ] Ouvrir le fichier indiqué par la première source du corrigé et lire le passage aux positions indiquées. Quels mots de ce passage permettent de répondre à la question ?
+- [ ] Refaire l'exercice avec `dataset_code_public.json`. Repérer la fonction ou la classe concernée.
 
-- [x] Initialize repository structure and MIT license.
-- [ ] Confirm the author's 42 login and update the README first line.
-- [ ] Add pyproject.toml and generate uv.lock; verify uv sync.
-- [ ] Configure Python 3.10+, Pydantic, Fire, tqdm, flake8, and mypy.
-- [ ] Add Makefile rules: install, run, debug, clean, lint.
-- [ ] Run flake8 . and mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs.
-- [ ] Obtain the supplied vLLM corpus and reference datasets.
+Le corrigé sert à vérifier la recherche. Lors d'une recherche réelle, le programme reçoit la question et doit retrouver lui-même le fichier et la plage de caractères.
 
-## 2. Data contracts and CLI
+## 2. Préparer le projet
 
-- [ ] Implement MinimalSource, UnansweredQuestion, AnsweredQuestion, RagDataset, MinimalSearchResults, MinimalAnswer, StudentSearchResults, and StudentSearchResultsAndAnswer.
-- [ ] Expose index, search, search_dataset, answer, answer_dataset, and evaluate through uv run python -m src.
-- [ ] Make all input and output paths configurable.
-- [ ] Handle empty queries, nonsensical queries, k=0, missing files, malformed JSON, and invalid options without unhandled tracebacks.
+- [x] Initialiser le dépôt, son arborescence et sa licence.
+- [ ] Compléter la première ligne du README avec le login 42.
+- [ ] Configurer Python 3.10+, uv, Pydantic, Python Fire, tqdm, flake8 et mypy. Ajouter `pyproject.toml` et `uv.lock`, puis vérifier `uv sync`.
+- [ ] Ajouter les règles `install`, `run`, `debug`, `clean` et `lint` au Makefile. Pour `lint`, exécuter `flake8 .` puis `mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs`.
 
-## 3. Indexing and retrieval
+## 3. Lire les fichiers et les découper
 
-- [ ] Implement distinct Python and Markdown/text chunkers.
-- [ ] Preserve exact corpus paths, text, and character spans.
-- [ ] Enforce the configured size with a 2,000-character ceiling.
-- [ ] Persist a BM25 or TF-IDF index under data/processed/.
-- [ ] Retrieve ranked top-k source spans for individual and batch queries.
-- [ ] Write StudentSearchResults JSON; keep output directories scoped by dataset.
+- [ ] Implémenter les huit modèles Pydantic de la section VI.4 du [sujet français](subject_fr.md). Commencer par `MinimalSource`, qui décrit le chemin et les deux positions d'un passage.
+- [ ] Découper d'abord un fichier Markdown, puis un fichier Python, avec une stratégie adaptée à chaque format.
+- [ ] Tester un fichier plus long que 2 000 caractères. Pour chaque passage, vérifier que le chemin correspond au fichier d'origine, que ses indices permettent d'en relire le texte exact et que sa longueur respecte `--max_chunk_size` ainsi que le plafond de 2 000 caractères.
 
-## 4. Grounded generation
+## 4. Retrouver les sources et mesurer le résultat
 
-- [ ] Load Qwen/Qwen3-0.6B locally.
-- [ ] Construct context within the token budget and ground answers in the retrieved evidence.
-- [ ] Validate output with Pydantic and write StudentSearchResultsAndAnswer JSON.
+- [ ] Construire un index BM25 ou TF-IDF et le sauvegarder dans `data/processed/` avec la commande `index`.
+- [ ] Lancer `search` sur la question de l'étape 1. Examiner les cinq premiers passages et comparer leur emplacement aux sources du corrigé.
+- [ ] Implémenter `search_dataset` pour écrire un JSON conforme à `StudentSearchResults`. Séparer les dossiers de sortie selon le dataset.
+- [ ] Implémenter `evaluate`. Pour chaque question, compter les sources de référence retrouvées parmi les k premiers passages, dans le même fichier, avec un seuil d'IoU de 0,05. Lancer séparément la moulinette fournie pour vérifier les résultats. Le programme ne doit jamais l'appeler.
+- [ ] Mesurer le recall@5 sur les deux datasets. Seuils requis : 80 % sur la documentation et 50 % sur le code. Mesurer aussi l'indexation du corpus (5 minutes maximum) et la recherche sur 200 questions (90 secondes maximum).
 
-## 5. Evaluation and documentation
+## 5. Générer les réponses et préparer le rendu
 
-- [ ] Implement local recall@k using same-file character-span overlap (IoU threshold 0.05).
-- [ ] Never import or invoke the moulinette from the application.
-- [ ] Reach recall@5 >= 0.80 on docs and >= 0.50 on code.
-- [ ] Measure indexing <= 5 minutes and 200-query retrieval <= 90 seconds.
-- [ ] Verify edge cases, type hints, docstrings, resource cleanup, and error handling.
-- [ ] Record measured performance, chunk-size effects, decisions, difficulties, examples, references, and AI usage in the English README.
+- [ ] Construire le contexte avec la question et les passages retrouvés en respectant le budget de tokens de Qwen/Qwen3-0.6B. Avec `answer`, vérifier sur une question connue que la réponse s'appuie sur le passage.
+- [ ] Implémenter `answer_dataset` à partir des résultats de recherche sauvegardés. Valider la sortie avec `StudentSearchResultsAndAnswer`.
+- [ ] Vérifier les six commandes via `uv run python -m src`, les chemins configurables et les barres de progression. Essayer une question vide ou absurde, `k=0`, un fichier absent et un JSON invalide. Chaque cas doit être traité sans exception non gérée.
+- [ ] Vérifier les annotations, docstrings et ressources ouvertes. Documenter en anglais dans le README les choix, exemples, difficultés, usages de l'IA, temps et scores mesurés, y compris l'effet de la taille des passages.
 
-## Optional bonuses after mandatory validation
+## Bonus après validation de la partie obligatoire
 
-- [ ] CPU semantic embeddings.
-- [ ] Hybrid lexical and semantic ranking.
-- [ ] Incremental indexing.
-- [ ] Index and query caching.
-- [ ] Local HTTP API.
+- [ ] Index vectoriel avec un modèle léger sur CPU.
+- [ ] Recherche hybride combinant classements lexical et sémantique.
+- [ ] Réindexation des seuls fichiers modifiés.
+- [ ] Cache de l'index et des résultats de recherche.
+- [ ] API HTTP locale.
