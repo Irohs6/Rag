@@ -26,7 +26,7 @@ uv run python -m src answer_dataset --student_search_results_path data/output/se
 uv run python -m src evaluate --student_search_results_path data/output/search_results/UnansweredQuestions/dataset_docs_public.json --dataset_path data/datasets/AnsweredQuestions/dataset_docs_public.json
 ```
 
-Dependency metadata, the uv lockfile, and the required Makefile will be added during implementation. See [the roadmap](docs/ROADMAP.md) and the assignment in [English](docs/subject_en.md) or [French](docs/subject_fr.md).
+Run `make install` to synchronize the project environment. During development, `make run ARGS='index --data_dir data/raw'` lists the selected files. See [the roadmap](docs/ROADMAP.md) and the assignment in [English](docs/subject_en.md) or [French](docs/subject_fr.md).
 
 ## System architecture
 

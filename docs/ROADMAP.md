@@ -13,8 +13,8 @@ Le corrigé sert à vérifier la recherche. Lors d'une recherche réelle, le pro
 
 - [x] Initialiser le dépôt, son arborescence et sa licence.
 - [ ] Compléter la première ligne du README avec le login 42.
-- [ ] Configurer Python 3.10+, uv, Pydantic, Python Fire, tqdm, flake8 et mypy. Ajouter `pyproject.toml` et `uv.lock`, puis vérifier `uv sync`.
-- [ ] Ajouter les règles `install`, `run`, `debug`, `clean` et `lint` au Makefile. Pour `lint`, exécuter `flake8 .` puis `mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs`.
+- [x] Configurer Python 3.10+, uv, Pydantic, Python Fire, tqdm, flake8 et mypy. Ajouter `pyproject.toml` et `uv.lock`, puis vérifier `uv sync`.
+- [x] Ajouter les règles `install`, `run`, `debug`, `clean` et `lint` au Makefile. Pour `lint`, exécuter `flake8 .` puis `mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs`.
 
 ## 3. Lire les fichiers et les découper
 

@@ -9,4 +9,4 @@ def index(data_dir: str = "data/raw") -> None:
 
 
 if __name__ == "__main__":
-    index
+    fire.Fire({"index": index})
