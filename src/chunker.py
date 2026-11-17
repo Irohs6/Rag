@@ -75,5 +75,4 @@ class Chunker:
                             last_character_index=chunk_end,
                         )
                     )
-
         return chunks
