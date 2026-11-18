@@ -18,7 +18,7 @@ class Tokenizer:
     @staticmethod
     def tokenizer_python(
         texte: str,
-        exclure_keywords: set = KEYWORDS_PYTHON,
+        exclure_keywords: set[str] = KEYWORDS_PYTHON,
         min_len: int = 3
     ) -> list[str]:
         """
@@ -50,6 +50,7 @@ class Tokenizer:
             show_progress=False,
         )[0]
 
+    @staticmethod
     def tokenize_document(text: str, file_path: str) -> list[str]:
         """Choisir la tokenisation selon le type de fichier."""
         if Path(file_path).suffix == ".py":
@@ -61,6 +62,6 @@ class Tokenizer:
         """Tokenize a query using both text and Python tokenizers,
             removing duplicates."""
         tokens_base = Tokenizer.tokenize_text(query)
-        tokens_code = Tokenizer.tokenize_code(query)
+        tokens_code = Tokenizer.tokenizer_python(query)
 
         return list(dict.fromkeys(tokens_base + tokens_code))

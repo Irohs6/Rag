@@ -1,7 +1,6 @@
 from pathlib import Path
 import bm25s
 from tqdm import tqdm
-import re
 import json
 from .chunker import Chunker
 from .data_models import (
