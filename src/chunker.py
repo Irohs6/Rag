@@ -1,6 +1,7 @@
 import ast
 
 from .data_models import MinimalSource
+import re
 
 
 class Chunker:
@@ -10,14 +11,26 @@ class Chunker:
         file_path: str,
         text: str,
         max_chunk_size: int,
+        overlap: int,
     ) -> list[MinimalSource]:
         if max_chunk_size <= 0:
             raise ValueError("max_chunk_size doit être supérieur à 0")
 
-        chunks = []
+        if overlap < 0:
+            raise ValueError("overlap doit être supérieur ou égal à 0")
 
-        for start in range(0, len(text), max_chunk_size):
+        chunks = []
+        start = 0
+
+        while start < len(text):
             end = min(start + max_chunk_size, len(text))
+
+            # Si tout le texte restant tient, inutile de chercher un point.
+            if end < len(text):
+                dernier_point = text.rfind(".", start, end)
+
+                if dernier_point != -1:
+                    end = dernier_point + 1
 
             chunks.append(
                 MinimalSource(
@@ -26,6 +39,17 @@ class Chunker:
                     last_character_index=end,
                 )
             )
+            if end == len(text):
+                break
+
+            next_start = end
+
+            if overlap > 0:
+                word = list(re.finditer(r"\s+", text[start:end]))
+                if len(word) > overlap:
+                    next_start = start + word[-overlap].start()
+
+            start = next_start
 
         return chunks
 
