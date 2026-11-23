@@ -31,10 +31,7 @@ class Retriever:
             desc="Tokenizing chunks",
             unit="chunk",
         ):
-            tokens = Tokenizer.tokenize_document(
-                passage,
-                source.file_path,
-            )
+            tokens = Tokenizer.tokenizer_python(passage)
             token_chunks.append(tokens)
 
         if not any(token_chunks):
