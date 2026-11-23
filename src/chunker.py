@@ -45,7 +45,7 @@ class Chunker:
             next_start = end
 
             if overlap > 0:
-                word = list(re.finditer(r"\s+", text[start:end]))
+                word = list(re.finditer(r"\S+", text[start:end]))
                 if len(word) > overlap:
                     next_start = start + word[-overlap].start()
 

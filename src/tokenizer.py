@@ -58,6 +58,7 @@ class Tokenizer:
 
         return Tokenizer.tokenize_text(text)
 
+    @staticmethod
     def tokenize_query(query: str) -> list[str]:
         """Tokenize a query using both text and Python tokenizers,
             removing duplicates."""
