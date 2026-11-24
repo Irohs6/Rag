@@ -27,10 +27,10 @@ class Chunker:
 
             # Si tout le texte restant tient, inutile de chercher un point.
             if end < len(text):
-                dernier_point = text.rfind(".", start, end)
+                last_dot = text.rfind(".", start, end)
 
-                if dernier_point != -1:
-                    end = dernier_point + 1
+                if last_dot != -1:
+                    end = last_dot + 1
 
             chunks.append(
                 MinimalSource(

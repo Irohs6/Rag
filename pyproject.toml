@@ -6,7 +6,9 @@ dependencies = [
     "bm25s>=0.3.16",
     "fire>=0.7",
     "pydantic>=2,<3",
+    "torch>=2.14.1",
     "tqdm>=4",
+    "transformers>=4.51",
 ]
 
 [dependency-groups]
@@ -15,6 +17,13 @@ dev = ["flake8>=7", "mypy>=1.10"]
 [tool.mypy]
 exclude = ["^data/", "^moulinette/"]
 
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+
 [[tool.mypy.overrides]]
 module = "fire"
 ignore_missing_imports = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
