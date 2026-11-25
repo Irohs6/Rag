@@ -31,7 +31,7 @@ class Retriever:
             desc="Tokenizing chunks",
             unit="chunk",
         ):
-            tokens = Tokenizer.tokenizer_python(passage)
+            tokens = Tokenizer.tokenize_advanced(passage)
             token_chunks.append(tokens)
 
         if not any(token_chunks):
