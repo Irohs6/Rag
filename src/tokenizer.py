@@ -1,10 +1,11 @@
 import re
-from pathlib import Path
+from typing import cast
 
 import bm25s
 
 
 class Tokenizer:
+    """Use advanced tokens for all documents and combined query tokens."""
 
     KEYWORDS_PYTHON = {
         "def", "class", "import", "from", "return",
@@ -16,13 +17,13 @@ class Tokenizer:
     }
 
     @staticmethod
-    def tokenizer_python(
+    def tokenize_advanced(
         texte: str,
         exclure_keywords: set[str] = KEYWORDS_PYTHON,
         min_len: int = 3
     ) -> list[str]:
         """
-        Tokenizer for Python code, excluding keywords and short tokens.
+        Tokenize any corpus document, splitting code identifiers as well.
         """
         # Split camelCase and PascalCase words into separate tokens.
         texte = re.sub(r'([a-z])([A-Z])', r'\1 \2', texte)
@@ -44,25 +45,17 @@ class Tokenizer:
     @staticmethod
     def tokenize_text(text: str) -> list[str]:
         """Use the basic BM25S tokenizer for text."""
-        return bm25s.tokenize(
+        return cast(list[list[str]], bm25s.tokenize(
             text,
             return_ids=False,
             show_progress=False,
-        )[0]
-
-    @staticmethod
-    def tokenize_document(text: str, file_path: str) -> list[str]:
-        """Choisir la tokenisation selon le type de fichier."""
-        if Path(file_path).suffix == ".py":
-            return Tokenizer.tokenizer_python(text)
-
-        return Tokenizer.tokenize_text(text)
+        ))[0]
 
     @staticmethod
     def tokenize_query(query: str) -> list[str]:
         """Tokenize a query using both text and Python tokenizers,
             removing duplicates."""
         tokens_base = Tokenizer.tokenize_text(query)
-        tokens_code = Tokenizer.tokenizer_python(query)
+        tokens_code = Tokenizer.tokenize_advanced(query)
 
         return list(dict.fromkeys(tokens_base + tokens_code))
