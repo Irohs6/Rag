@@ -104,3 +104,23 @@ Regression tests cover exact source coverage, decorators, Unicode offsets,
 syntax fallback, model reuse, source limits, context boundaries, interrupted
 runs, checkpoint validation and atomic writes. Generation tests replace the
 Transformers backend; they validate orchestration, not model quality or speed.
+
+## Makefile shortcuts
+
+```sh
+make install
+make index
+make search QUERY="What HTTP endpoint loads a LoRA adapter?" K=5
+make search_dataset K=10
+make answer QUERY="What HTTP endpoint loads a LoRA adapter?" K=5
+make answer_dataset K=5
+# Same input, output and K as the interrupted run:
+make answer_dataset K=5 RESUME=True
+make test
+make lint
+```
+
+`DATA_DIR`, `INDEX_DIRECTORY`, `DATASET_PATH`, `SAVE_DIRECTORY`,
+`STUDENT_SEARCH_RESULTS_PATH` and `SAVE_A_DIRECTORY` can be overridden on the
+make command line. Variable defaults do not contain quote characters; recipes
+quote paths when passing them to Python. `make run ARGS='...'` remains available.
