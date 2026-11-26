@@ -1,6 +1,4 @@
 import re
-from pathlib import Path
-
 import bm25s
 
 
@@ -49,14 +47,6 @@ class Tokenizer:
             return_ids=False,
             show_progress=False,
         )[0]
-
-    @staticmethod
-    def tokenize_document(text: str, file_path: str) -> list[str]:
-        """Choisir la tokenisation selon le type de fichier."""
-        if Path(file_path).suffix == ".py":
-            return Tokenizer.tokenizer_python(text)
-
-        return Tokenizer.tokenize_text(text)
 
     @staticmethod
     def tokenize_query(query: str) -> list[str]:

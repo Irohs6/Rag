@@ -13,6 +13,7 @@ from pydantic import ValidationError
 from uuid import uuid4
 from .retriever import Retriever
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers.utils import logging
 
 
 class RagCli:
@@ -207,7 +208,7 @@ class RagCli:
         # 4. Charger le tokenizer et le modèle.
         model_name = "Qwen/Qwen3-0.6B"
         tokenizer = AutoTokenizer.from_pretrained(model_name)
-
+        logging.disable_progress_bar()
         model = AutoModelForCausalLM.from_pretrained(model_name)
         model.to("cpu")
         model.eval()
@@ -256,6 +257,7 @@ class RagCli:
 
         # Charger le modèle une seule fois, avant la boucle.
         model_name = "Qwen/Qwen3-0.6B"
+        logging.disable_progress_bar()
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForCausalLM.from_pretrained(model_name)
         model.to("cpu")
@@ -277,6 +279,10 @@ class RagCli:
             results.search_results,
             desc="Processing search results",
             unit="answer",
+            colour="cyan",
+            dynamic_ncols=True,
+            mininterval=0.5,
+            leave=True,
         ):
             # Une nouvelle liste pour chaque question.
             passages: list[str] = []
