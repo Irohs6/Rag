@@ -12,17 +12,18 @@ from .data_models import (
 from pydantic import ValidationError
 from uuid import uuid4
 from .retriever import Retriever
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-from transformers.utils import logging
+from transformers import pipeline
+from .pipeline import Pipeline
 
 
 class RagCli:
+
+    SAVE_DIRECTORY = "data/processed"
 
     @staticmethod
     def index(
         data_dir: str = "data/raw",
         max_chunk_size: int = 2000,
-        save_directory: str = "data/processed/",
     ) -> None:
 
         if not Path(data_dir).is_dir():
@@ -64,9 +65,9 @@ class RagCli:
 
         retriever = Retriever()
         retriever.index(all_chunks)
-        retriever.save(save_directory)
+        retriever.save(RagCli.save_directory)
 
-        print(f"Index and sources saved in {save_directory}")
+        print(f"Index and sources saved in {RagCli.save_directory}")
 
     @staticmethod
     def search(
@@ -206,12 +207,8 @@ class RagCli:
         ]
 
         # 4. Charger le tokenizer et le modèle.
-        model_name = "Qwen/Qwen3-0.6B"
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        logging.disable_progress_bar()
-        model = AutoModelForCausalLM.from_pretrained(model_name)
-        model.to("cpu")
-        model.eval()
+        tokenizer, model = Pipeline.init_model()
+
         pipe = pipeline(
             "text-generation", model=model, tokenizer=tokenizer, device="cpu"
         )
@@ -256,12 +253,7 @@ class RagCli:
             ) from error
 
         # Charger le modèle une seule fois, avant la boucle.
-        model_name = "Qwen/Qwen3-0.6B"
-        logging.disable_progress_bar()
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForCausalLM.from_pretrained(model_name)
-        model.to("cpu")
-        model.eval()
+        tokenizer, model = Pipeline.init_model()
 
         pipe = pipeline(
             "text-generation",
@@ -269,7 +261,7 @@ class RagCli:
             tokenizer=tokenizer,
             device="cpu",
         )
-
+        
         answers = StudentSearchResultsAndAnswer(
             search_results=[],
             k=results.k,
